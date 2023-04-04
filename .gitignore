@@ -1,12 +1,12 @@
 HELP.md
 target
 
-src/resources/static/*
+/src/main/resources/static/*
 
 
 ### IntelliJ IDEA ###
 .idea
-zookeeper-admin.iml
+*.iml
 
 
 ### VS Code ###
