@@ -1,15 +1,24 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue'
-import { getToken } from '@/utils';
+import { getToken } from '@/utils'
+
+const getBaseUrl = () => {
+  if (process.env.VUE_APP_ENV == 'production') {
+    return '';
+  } else {
+    return 'http://127.0.0.1:8083';
+  }
+}
 
 let service=axios.create({
-    baseURL:"/api",
+    baseURL:getBaseUrl(),
     timeout:30000,
     // withCredentials:true,
     validateStatus:function(status) {
       return status == 200;
     }
 })
+
 
 service.interceptors.request.use(
   function (config) {

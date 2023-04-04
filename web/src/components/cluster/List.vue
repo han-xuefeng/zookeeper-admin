@@ -17,10 +17,10 @@
           </a-tooltip>
           <a-divider type="vertical" />
           <a-tooltip>
-            <a-button type="dashed" @click="addCluster">
+            <a-button type="dashed" @click="showAddClusterModal">
               <template #icon><PlusOutlined /></template>
             </a-button>
-            <AddClusterModal ref="addClusterModal"/>
+            <AddClusterModal :visible="addClusterModalVisible" @handle-cancel="closeAddClusterModal"/>
           </a-tooltip>
           <a-tooltip>
             <a-button href="https://www.google.com">
@@ -58,9 +58,6 @@
   import AddClusterModal from './modal/AddCluster.vue'
   import { clustersPaging, clustersConnect } from '@/request/api/cluster'
   import { message } from 'ant-design-vue';
-
-
-  const addClusterModal = ref(null)
 
   const pageSize = ref(5)
   const pageIndex = ref(1)
@@ -124,8 +121,15 @@
   })
 
 
-  const addCluster = ()=> {
-    addClusterModal.value.showModal()
+  // addClusterModalVisible
+  const addClusterModalVisible = ref(false)
+  const showAddClusterModal = ()=> {
+    addClusterModalVisible.value = true
+  }
+
+  const closeAddClusterModal =() => {
+    console.log('^^^^^^^^^');
+    addClusterModalVisible.value = false
   }
 
   const connectCluster = async (record) => {
