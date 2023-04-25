@@ -42,10 +42,10 @@ public class ClusterController {
         return Result.success(PageResult.of(page.getTotalElements(), items));
     }
 
-    @PostMapping("")
+    @PostMapping("create")
     public Result create(@RequestBody Cluster cluster) throws ExecutionException, InterruptedException {
         if(cluster.getServers() == null || cluster.getServers().equals("")) {
-            throw new  IllegalArgumentException("server is empty");
+            return Result.failure("server is empty");
         }
         clusterService.create(cluster);
         return Result.success();

@@ -10,14 +10,14 @@
     name="custom-validation"
     :model="formState"
     >
-      <a-form-item has-feedback label="Name" name="cluster_name">
-        <a-input v-model:value="formState.cluster_name" type="text" autocomplete="off" />
+      <a-form-item has-feedback label="Name" name="name">
+        <a-input v-model:value="formState.name" type="text" autocomplete="off" />
       </a-form-item>
-      <a-form-item has-feedback label="Server" name="cluster_server">
-        <a-input v-model:value="formState.cluster_server" type="text" autocomplete="off" />
+      <a-form-item has-feedback label="Server" name="servers">
+        <a-input v-model:value="formState.servers" type="text" autocomplete="off" />
       </a-form-item>
-      <a-form-item has-feedback label="Acl" name="cluster_acl">
-        <a-input v-model:value="formState.cluster_acl" type="text" autocomplete="off" />
+      <a-form-item has-feedback label="Acl" name="acl">
+        <a-input v-model:value="formState.acl" type="text" autocomplete="off" />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -25,24 +25,29 @@
 
 <script setup>
   import { ref,reactive } from 'vue';
+  import { clustersCreate } from '@/request/api/cluster'
+  import { message } from 'ant-design-vue'
   const confirmLoading = ref(false);
   const formState = reactive({
-    cluster_name: '',
-    cluster_server: '',
-    cluster_acl: '',
+    name: '',
+    servers: '',
+    acl: '',
   });
 
   defineProps(['visible'])
 
   const emit = defineEmits(['handleCancel'])
 
-  const handleOk = e => {
+  const handleOk = async e => {
     confirmLoading.value = true;
     //调取api
-    setTimeout(() => {
+    const res = await clustersCreate(formState)
+    if (res.data.code == 0) {
+      window.location.href = '/'
+    } else {
       confirmLoading.value = false;
-      emit('handleCancel')
-    }, 2000);
+      message.error(res.data.message)
+    }
   };
   
 

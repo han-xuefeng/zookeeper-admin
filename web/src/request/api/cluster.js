@@ -15,3 +15,11 @@ export function clustersConnect(data){
       params:data
   })
 }
+
+export function clustersCreate(data){
+  return service({
+      method:"post",
+      url:"/clusters/create",
+      data:data
+  })
+}
