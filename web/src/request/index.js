@@ -5,7 +5,9 @@ import { getToken } from '@/utils'
 const getBaseUrl = () => {
   if (process.env.VUE_APP_ENV == 'production') {
     return '';
-  } else {
+  } else if(process.env.VUE_APP_ENV == 'debug') {
+    return '/api';
+  }else{
     return 'http://127.0.0.1:8083';
   }
 }

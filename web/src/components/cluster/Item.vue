@@ -6,18 +6,13 @@
       @back="() => $router.go(-1)"
     >
       <template #extra>
-        <a-button 
-          key="3"
-          href="https://www.google.com">
+        <a-button onclick="javascript:location.reload();">
           <template #icon><UndoOutlined /></template>
         </a-button>
-        <a-input-search
-            key="2"
-            placeholder="input search text"
-            style="width: 200px"
-          />
         
-        <a-button type="primary">Open Modal</a-button>
+        
+        <a-button type="primary" @click="showAddChildNodeModal">Add Child Node</a-button>
+        <AddChildNodeModal :visible="addChildNodeModalVisible" @handle-cancel="hideAddChildNodeModal"></AddChildNodeModal>
       </template>
       <a-descriptions size="small" :column="2">
         <a-descriptions-item label="Cluster Id" size="middle">
@@ -86,6 +81,19 @@
   import { clusterDataList, clusterDataItem } from '@/request/api/clusterData'
   import { message } from 'ant-design-vue'
   import LoadNodeData from './modal/LoadNodeData.vue'
+  import AddChildNodeModal from './modal/AddChildNode.vue'
+
+
+  const addChildNodeModalVisible = ref(false)
+  const showAddChildNodeModal = () => {
+    addChildNodeModalVisible.value = true
+  }
+
+  const hideAddChildNodeModal = () => {
+    addChildNodeModalVisible.value = false
+  }
+
+
 
   const route = useRoute()
   const id = route.params.id

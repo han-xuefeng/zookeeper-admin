@@ -9,12 +9,14 @@
           <a-input-search
             placeholder="input search text"
             style="width: 200px"
+            v-model:value="search"
+            @search="onSearch"
           />
-          <a-tooltip>
+          <!-- <a-tooltip>
             <a-button href="https://www.google.com">
               <template #icon><UndoOutlined /></template>
             </a-button>
-          </a-tooltip>
+          </a-tooltip> -->
           <a-divider type="vertical" />
           <a-tooltip>
             <a-button type="dashed" @click="showAddClusterModal">
@@ -23,15 +25,15 @@
             <AddClusterModal :visible="addClusterModalVisible" @handle-cancel="closeAddClusterModal"/>
           </a-tooltip>
           <a-tooltip>
-            <a-button href="https://www.google.com">
+            <a-button @click="onRefreshList">
               <template #icon><SyncOutlined /></template>
             </a-button>
           </a-tooltip>
-          <a-tooltip>
+          <!-- <a-tooltip>
             <a-button href="https://www.google.com" danger>
               <template #icon><DeleteOutlined /></template>
             </a-button>
-          </a-tooltip>
+          </a-tooltip> -->
         </a-space>
       </a-col>
     </a-row>
@@ -53,7 +55,7 @@
   </div>
 </template>
 <script setup>
-  import { UndoOutlined, PlusOutlined, SyncOutlined, DeleteOutlined } from '@ant-design/icons-vue'
+  import { PlusOutlined, SyncOutlined, DeleteOutlined } from '@ant-design/icons-vue'
   import { onMounted, reactive,ref } from 'vue'
   import AddClusterModal from './modal/AddCluster.vue'
   import { clustersPaging, clustersConnect } from '@/request/api/cluster'
@@ -61,6 +63,7 @@
 
   const pageSize = ref(5)
   const pageIndex = ref(1)
+  const search = ref('')
 
   const state = reactive({
     "dataSource":[],
@@ -109,7 +112,8 @@
   const clustersPagingApi = async function(){
     let data = {
       "pageSize":pageSize.value,
-      "pageIndex": pageIndex.value
+      "pageIndex": pageIndex.value,
+      "name": search.value
     }
     let res = await clustersPaging(data)
     state.dataSource = res.data.data.items
@@ -120,6 +124,17 @@
     clustersPagingApi()
   })
 
+
+  const onSearch = ()=>{
+    clustersPagingApi()
+  }
+
+  const onRefreshList = () => {
+    search.value =  ''
+    pageSize.value = 5
+    pageIndex.value = 1
+    clustersPagingApi();
+  }
 
   // addClusterModalVisible
   const addClusterModalVisible = ref(false)
