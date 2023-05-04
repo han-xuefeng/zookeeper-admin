@@ -1,5 +1,6 @@
 package com.idaiq.zookeeperAdmin.service;
 
+import com.idaiq.zookeeperAdmin.controller.form.CreateNodeForm;
 import com.idaiq.zookeeperAdmin.controller.vo.ClusterDataItem;
 import com.idaiq.zookeeperAdmin.controller.vo.ClusterDataList;
 import org.apache.curator.framework.CuratorFramework;
@@ -63,5 +64,13 @@ public class ClusterDataService {
         clusterDataItem.setPath(path);
         clusterDataItem.setStat(stat);
         return clusterDataItem;
+    }
+
+    public void createNode(String id, CreateNodeForm createNodeForm) throws Exception {
+        CuratorFramework curatorFramework = checkConnect(id);
+        if (curatorFramework == null) {
+            throw new RuntimeException("error");
+        }
+        curatorFramework.create().forPath(createNodeForm.getParentPath() + "/" + createNodeForm.getPath(), createNodeForm.getData().getBytes());
     }
 }

@@ -1,14 +1,12 @@
 package com.idaiq.zookeeperAdmin.controller;
 
 import com.idaiq.zookeeperAdmin.controller.dto.Result;
+import com.idaiq.zookeeperAdmin.controller.form.CreateNodeForm;
 import com.idaiq.zookeeperAdmin.controller.vo.ClusterDataItem;
 import com.idaiq.zookeeperAdmin.controller.vo.ClusterDataList;
 import com.idaiq.zookeeperAdmin.service.ClusterDataService;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/clusterData")
 @RestController
@@ -50,6 +48,28 @@ public class ClusterDataController {
             return Result.failure("节点连接异常");
         } catch (Exception e) {
             return Result.error("系统异常");
+        }
+    }
+
+    @PostMapping("create")
+    public Result create(
+            @RequestParam String id,
+            @RequestBody CreateNodeForm createNodeForm
+            ){
+
+        try {
+
+            if (createNodeForm.getParentPath() == null || "/".equals(createNodeForm.getParentPath())) {
+                createNodeForm.setParentPath("");
+            }
+
+            clusterDataService.createNode(id, createNodeForm);
+            return Result.success("success");
+        } catch (RuntimeException e){
+//            throw e;
+            return Result.failure("节点创建失败");
+        } catch (Exception e) {
+            return Result.error("创建节点失败");
         }
     }
 }
