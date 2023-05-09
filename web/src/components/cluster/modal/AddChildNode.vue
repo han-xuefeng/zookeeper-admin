@@ -27,9 +27,11 @@
 <script setup>
 
   import {reactive, ref} from 'vue'
+  import { clusterDataCreate } from '@/request/api/clusterData'
+  import { message } from 'ant-design-vue'
   const confirmLoading = ref(false);
 
-  defineProps(['visible'])
+  const prop = defineProps(['visible', 'nodePath', 'id'])
 
   const formState = reactive({
     node: '',
@@ -37,7 +39,7 @@
     acl: '',
   });
 
-  const emit = defineEmits(['handleCancel'])
+  const emit = defineEmits(['handleCancel', 'handleSuccess'])
 
   const closeAddChildDataModal = () => {
     emit('handleCancel')
@@ -46,13 +48,26 @@
   const handleOk = async e => {
     confirmLoading.value = true;
     //调取api
-    // const res = await clustersCreate(formState)
-    // if (res.data.code == 0) {
-    //   window.location.href = '/'
-    // } else {
-    //   confirmLoading.value = false;
-    //   message.error(res.data.message)
-    // }
+
+    console.log(prop)
+
+    const data = {
+      'path':formState.node,
+      'data':formState.data,
+      'acl':formState.acl,
+      'parentPath':prop.nodePath
+    }
+
+    const res = await clusterDataCreate(data, {'id':prop.id})
+    if (res.data.code == 0) {
+      //  这里成功了
+      //  页面重新渲染
+      emit('handleCancel')
+      emit('handleSuccess')
+    } else {
+      message.error(res.data.message)
+    }
+    confirmLoading.value = false;
   };
 
 

@@ -47,7 +47,14 @@ public class ClusterController {
         if(cluster.getServers() == null || cluster.getServers().equals("")) {
             return Result.failure("server is empty");
         }
-        clusterService.create(cluster);
+        try {
+            clusterService.create(cluster);
+        }catch (IllegalArgumentException $e) {
+            return Result.error($e.getMessage());
+        }catch (Exception $e) {
+            return Result.error("节点添加失败, 请检查Server合法");
+        }
+
         return Result.success();
     }
 
@@ -65,5 +72,16 @@ public class ClusterController {
         } catch (Exception e) {
             return Result.failure("连接失败");
         }
+    }
+
+    @GetMapping ("delete")
+    public Result delete(
+            @RequestParam String id
+    ) {
+        boolean delete = clusterService.delete(id);
+        if (delete) {
+            return Result.success();
+        }
+        return Result.error("删除失败");
     }
 }

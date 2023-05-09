@@ -16,3 +16,13 @@ export function clusterDataItem(data){
       params:data
   })
 }
+
+
+export function clusterDataCreate(data, params){
+  return service({
+      method:"post",
+      url:"/clusterData/create",
+      data:data,
+      params:params
+  })
+}

@@ -44,7 +44,7 @@
         <template v-if="column.key === 'action'">
           <router-link :to="{name:'clusterItem', params: {id:record.id}, query:{'name':record.name}}">View Data</router-link>
           <a-divider type="vertical" />
-          <a>Delete</a>
+          <a @click="deleteCluster(record)">Delete</a>
         </template>
         <template v-if="column.key === 'status'">
             <a-switch v-model:checked="record.status" :loading="record.loading ? true : false" @change="connectCluster(record)"/>
@@ -58,7 +58,7 @@
   import { PlusOutlined, SyncOutlined, DeleteOutlined } from '@ant-design/icons-vue'
   import { onMounted, reactive,ref } from 'vue'
   import AddClusterModal from './modal/AddCluster.vue'
-  import { clustersPaging, clustersConnect } from '@/request/api/cluster'
+  import { clustersPaging, clustersConnect,clustersDelete } from '@/request/api/cluster'
   import { message } from 'ant-design-vue';
 
   const pageSize = ref(5)
@@ -143,7 +143,6 @@
   }
 
   const closeAddClusterModal =() => {
-    console.log('^^^^^^^^^');
     addClusterModalVisible.value = false
   }
 
@@ -153,15 +152,26 @@
       "id" : record.id
     }
     let res = await clustersConnect(data)
-    // res.then(v=>{
-    //   console.log(v);
-    // })
     if (res.data.code != 0) {
       message.error(res.data.message)
       record.status = false
     }
     record.loading = false
   }
+
+  const deleteCluster = async (record) => {
+    let data = {
+      "id" : record.id
+    }
+    const res = await clustersDelete(data)
+    if (res.data.code != 0) {
+      message.error(res.data.message)
+    } else {
+      message.success("Success")
+      clustersPagingApi()
+    }
+  }
+
 
 </script>
 

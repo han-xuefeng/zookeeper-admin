@@ -23,3 +23,11 @@ export function clustersCreate(data){
       data:data
   })
 }
+
+export function clustersDelete(data){
+  return service({
+      method:"get",
+      url:"/clusters/delete",
+      params:data
+  })
+}

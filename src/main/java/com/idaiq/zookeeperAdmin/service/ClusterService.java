@@ -88,4 +88,13 @@ public class ClusterService {
         }
         zkClientService.addZkClient(id, connect);
     }
+
+    public boolean delete(String id) {
+        try {
+            clusterRepository.deleteById(id);
+            return true;
+        }catch (Exception $e) {
+            return false;
+        }
+    }
 }

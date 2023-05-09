@@ -12,7 +12,7 @@
         
         
         <a-button type="primary" @click="showAddChildNodeModal">Add Child Node</a-button>
-        <AddChildNodeModal :visible="addChildNodeModalVisible" @handle-cancel="hideAddChildNodeModal"></AddChildNodeModal>
+        <AddChildNodeModal :visible="addChildNodeModalVisible" :nodePath="currentNode" :id="id" @handle-cancel="hideAddChildNodeModal" @handle-success="clusterDataListApi()"></AddChildNodeModal>
       </template>
       <a-descriptions size="small" :column="2">
         <a-descriptions-item label="Cluster Id" size="middle">
@@ -70,7 +70,7 @@
     </a-table>
   </div>
 
-  <LoadNodeData :visible="visible" :nodeData="nodeData" :nodePath="nodePath" :nodeStat="nodeStat" @handle-cancel="hideLoadNodeDataModal"/>
+  <LoadNodeData :visible="visible" :nodeData="nodeData" :nodePath="nodePath" :nodeStat="nodeStat" @handle-cancel="hideLoadNodeDataModal" />
 
 </template>
 
@@ -86,6 +86,7 @@
 
   const addChildNodeModalVisible = ref(false)
   const showAddChildNodeModal = () => {
+    console.log(currentNode);
     addChildNodeModalVisible.value = true
   }
 
@@ -101,6 +102,8 @@
   const nodePath = ref('')
   const nodeData = ref('')
   const nodeStat = reactive({})
+
+  const currentNode = ref('/')
 
   const state = reactive({
     "dataSource":[
@@ -129,12 +132,18 @@
 
   const viewChildNode = (text) => {
     state.dataPaths.push(text)
+    if (currentNode.value == '/') {
+      currentNode.value = currentNode.value + text
+    } else {
+      currentNode.value = currentNode.value + '/' + text
+    }
     clusterDataListApi()
   }
 
   const loadChildNode = (path)=>{
     if (path == '/') {
       state.dataPaths = []
+      currentNode.value = '/'
     } else {
       let p = ''
       while(p = state.dataPaths.pop()) {
@@ -143,6 +152,9 @@
           break;
         }
       }
+
+      currentNode.value = state.dataPaths.length == 0 ? '/' : '/' + state.dataPaths.join('/')
+
     }
     clusterDataListApi()
   }
@@ -164,12 +176,15 @@
     state.dataPaths = res.data.data.paths
   }
 
+  const reloadClusterDataListApi = ()=>{
+    clusterDataListApi()
+  }
+
   const doList = (list) => {
       let listObj = []
       for (const i in list) {
         listObj.push({'path':list[i]})
       }
-      console.log(listObj);
       return listObj
   }
 
@@ -189,7 +204,6 @@
     nodePath.value = res.data.data.path
     nodeData.value = res.data.data.data
     nodeStat.value = res.data.data.stat
-    console.log(nodeStat)
     visible.value = true
   }
 
