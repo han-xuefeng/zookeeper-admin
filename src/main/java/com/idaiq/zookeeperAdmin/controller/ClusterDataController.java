@@ -2,6 +2,7 @@ package com.idaiq.zookeeperAdmin.controller;
 
 import com.idaiq.zookeeperAdmin.controller.dto.Result;
 import com.idaiq.zookeeperAdmin.controller.form.CreateNodeForm;
+import com.idaiq.zookeeperAdmin.controller.form.DeleteNodeForm;
 import com.idaiq.zookeeperAdmin.controller.vo.ClusterDataItem;
 import com.idaiq.zookeeperAdmin.controller.vo.ClusterDataList;
 import com.idaiq.zookeeperAdmin.service.ClusterDataService;
@@ -70,6 +71,24 @@ public class ClusterDataController {
             return Result.failure("节点创建失败");
         } catch (Exception e) {
             return Result.error("创建节点失败");
+        }
+    }
+
+    @PostMapping("delete")
+    public Result delete(
+            @RequestParam String id,
+            @RequestBody DeleteNodeForm deleteNodeForm
+            ) throws Exception {
+
+        try {
+
+            clusterDataService.deleteNode(id, deleteNodeForm.getPath());
+            return Result.success("success");
+        } catch (RuntimeException e){
+//            throw e;
+            return Result.failure("节点删除失败");
+        } catch (Exception e) {
+            return Result.error("删除节点失败"+e.getMessage());
         }
     }
 }

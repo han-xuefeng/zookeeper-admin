@@ -73,4 +73,12 @@ public class ClusterDataService {
         }
         curatorFramework.create().forPath(createNodeForm.getParentPath() + "/" + createNodeForm.getPath(), createNodeForm.getData().getBytes());
     }
+
+    public void deleteNode(String id, String path) throws Exception {
+        CuratorFramework curatorFramework = checkConnect(id);
+        if (curatorFramework == null) {
+            throw new RuntimeException("error");
+        }
+        curatorFramework.delete().forPath(path);
+    }
 }

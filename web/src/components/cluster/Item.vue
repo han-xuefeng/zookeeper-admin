@@ -60,7 +60,7 @@
         <template v-if="column.key === 'action'">
           <a @click="showLoadNodeDataModal(record.path)">View Data</a>
           <a-divider type="vertical" />
-          <a>Delete</a>
+          <a @click="deleteClusterNode(record.path)">Delete</a>
         </template>
 
         <template v-if="column.key === 'path'">
@@ -78,7 +78,7 @@
   import { UndoOutlined } from '@ant-design/icons-vue'
   import { onMounted, reactive,ref } from 'vue'
   import { useRoute } from 'vue-router'
-  import { clusterDataList, clusterDataItem } from '@/request/api/clusterData'
+  import { clusterDataList, clusterDataItem, clusterDataDelete } from '@/request/api/clusterData'
   import { message } from 'ant-design-vue'
   import LoadNodeData from './modal/LoadNodeData.vue'
   import AddChildNodeModal from './modal/AddChildNode.vue'
@@ -129,6 +129,24 @@
       key: 'action',
     }
   ])
+
+  const deleteClusterNode = async (text)=>{
+    let deletePath = ''
+    if (currentNode.value == '/') {
+      deletePath = currentNode.value + text
+    } else {
+      deletePath = currentNode.value + '/' + text
+    }
+
+    const res = await clusterDataDelete({'path':deletePath},{'id':id})
+
+    if (res.data.code != 0) {
+      message.error(res.data.message)
+    } else {
+      reloadClusterDataListApi()
+    }
+  }
+
 
   const viewChildNode = (text) => {
     state.dataPaths.push(text)

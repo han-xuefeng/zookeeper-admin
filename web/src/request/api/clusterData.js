@@ -26,3 +26,12 @@ export function clusterDataCreate(data, params){
       params:params
   })
 }
+
+export function clusterDataDelete(data, params){
+  return service({
+      method:"post",
+      url:"/clusterData/delete",
+      data:data,
+      params:params
+  })
+}
